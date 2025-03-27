@@ -1,7 +1,22 @@
 #インポート
 
 #グローバル変数の宣言
-
+ELEMENT_SYMBOLS = {
+        '火':'$',
+        '水':'~',
+        '風':'@',
+        '土':'#',
+        '命':'&',
+        '無':' ',
+        }
+ELEMENT_COLORS ={
+        '火':1,
+        '水':6,
+        '風':2,
+        '土':3,
+        '命':5,
+        '無':7,
+        }
 #関数宣言
 def main():
     monster_list = [
@@ -76,7 +91,10 @@ def do_battle(monster):
     return 1
 
 def print_monster_name(monster):
+    symbol = ELEMENT_SYMBOLS[monster['element']]
+    color = ELEMENT_COLORS[monster['element']]
+
     monster_name = monster['name']
-    print(f'{monster_name}',end='')
+    print(f'\033[3{color}m{symbol}{monster_name}{symbol}\033[0m',end='')
 
 main()
