@@ -19,6 +19,36 @@ ELEMENT_COLORS ={
         }
 #関数宣言
 def main():
+    friends =[
+            {'名前':'青龍',
+             'HP':150,
+             '最大HP':150,
+             '属性':'風',
+             '攻撃力':15,
+             '防御力':10,
+             },
+            {'名前':'朱龍',
+             'HP':150,
+             '最大HP':150,
+             '属性':'火',
+             '攻撃力':25,
+             '防御力':10,
+             },
+            {'名前':'白虎',
+             'HP':150,
+             '最大HP':150,
+             '属性':'土',
+             '攻撃力':20,
+             '防御力':5,
+             },
+            {'名前':'玄武',
+             'HP':150,
+             '最大HP':150,
+             '属性':'水',
+             '攻撃力':20,
+             '防御力':15,
+             },
+            ]
     monster_list = [
             {
             'name':'スライム',
@@ -68,19 +98,74 @@ def main():
         else:
             print('エラー プレイヤー名を入力してください')
     print('*** Puzzle & Monsters ***')
-    kills = go_dungeon(player_name,monster_list)
+    party = organize_party(player_name,friends)
+    show_party(party)
+    kills = go_dungeon(party ,monster_list)
     if kills == len(monster_list):
         print('*** GAME CLEARED! ***')
         print(f'倒したモンスター数={kills}')
     else:
         print('*** GAME OVER! ***')
-def go_dungeon(player_name,monster_list):
+        print(f'倒したモンスター数={kills}')
+
+def organize_party(player_name,friends):
+    max_hp = 0
+    dp = 0
+    for friend in friends:
+        max_hp += friend['最大HP']
+        dp += friend['防御力']
+    hp = max_hp
+    dp = dp // len(friends)
+    party = {
+            'プレーヤー名':player_name,
+            '味方モンスター':friends,
+            'HP':hp,
+            '最大HP':max_hp ,
+            '防御力':dp,
+            }
+    return party
+
+def show_party(party):
+    print('<パーティ編成>------------------')
+    for friend in party['味方モンスター']:
+        name = friend['名前']
+        hp = friend['HP']
+        ap = friend['攻撃力']
+        dp = friend['防御力']
+        symbol = None
+        color = None
+        if friend['属性'] == '風':
+            symbol = ELEMENT_SYMBOLS['風']
+            color = ELEMENT_COLORS['風']
+        elif friend['属性'] == '火':
+            symbol = ELEMENT_SYMBOLS['火']
+            color = ELEMENT_COLORS['火']
+        elif friend['属性'] == '土':
+            symbol = ELEMENT_SYMBOLS['土']
+            color = ELEMENT_COLORS['土']
+        else:
+            symbol = ELEMENT_SYMBOLS['水']
+            color = ELEMENT_COLORS['水']
+        print(f'\033[3{color}m{symbol}{name}{symbol}\033[0m HP= {hp} 攻撃= {ap} 防御= {dp}')
+    print('-------------------------------')
+    print()
+
+def go_dungeon(party,monster_list):
     kills = 0
 
-    print(f'{player_name}はダンジョンに到着した')
+    print(f'{party['プレーヤー名']}のパーティ(HP={party['HP']})はダンジョンに到着した')
     for monster in monster_list:
         kills += do_battle(monster)
-    print(f'{player_name}はダンジョンに制覇した')
+        hp = party['HP']
+        #hp=0
+        if hp > 0:
+            print(f'{party['プレーヤー名']}はさらに奥に進んだ')
+            print('==================================')
+        else:
+            print(f'{party['プレーヤー名']}はダンジョンから逃げ出した')
+            return kills
+
+    print(f'{party['プレーヤー名']}はダンジョンを制覇した')
     return kills
 
 def do_battle(monster):
@@ -96,5 +181,19 @@ def print_monster_name(monster):
 
     monster_name = monster['name']
     print(f'\033[3{color}m{symbol}{monster_name}{symbol}\033[0m',end='')
+
+def on_player_turn(party,monster):
+    print(f'【{party['プレーヤー名']}のターン】(HP={})')
+
+
+def on_enemy_turn():
+
+
+def do_battle():
+
+
+def do_attack():
+
+def do_enemy_attack():
 
 main()
