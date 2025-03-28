@@ -113,35 +113,35 @@ def organize_party(player_name,friends):
     max_hp = 0
     dp = 0
     for friend in friends:
-        max_hp += friend['最大HP']
-        dp += friend['防御力']
+        max_hp += friend['max_hp']
+        dp += friend['dp']
     hp = max_hp
     dp = dp // len(friends)
     party = {
-            'プレーヤー名':player_name,
-            '味方モンスター':friends,
-            'HP':hp,
-            '最大HP':max_hp ,
-            '防御力':dp,
+            'name':player_name,
+            'friends':friends,
+            'hp':hp,
+            'max_hp':max_hp ,
+            'dp':dp,
             }
     return party
 
 def show_party(party):
     print('<パーティ編成>------------------')
-    for friend in party['味方モンスター']:
-        name = friend['名前']
-        hp = friend['HP']
-        ap = friend['攻撃力']
-        dp = friend['防御力']
+    for friend in party['friends']:
+        name = friend['name']
+        hp = friend['hp']
+        ap = friend['ap']
+        dp = friend['dp']
         symbol = None
         color = None
-        if friend['属性'] == '風':
+        if friend['element'] == '風':
             symbol = ELEMENT_SYMBOLS['風']
             color = ELEMENT_COLORS['風']
-        elif friend['属性'] == '火':
+        elif friend['element'] == '火':
             symbol = ELEMENT_SYMBOLS['火']
             color = ELEMENT_COLORS['火']
-        elif friend['属性'] == '土':
+        elif friend['element'] == '土':
             symbol = ELEMENT_SYMBOLS['土']
             color = ELEMENT_COLORS['土']
         else:
@@ -154,32 +154,32 @@ def show_party(party):
 def go_dungeon(party,monster_list):
     kills = 0
 
-    print(f'{party['プレーヤー名']}のパーティ(HP={party['HP']})はダンジョンに到着した')
+    print(f'{party['name']}のパーティ(HP={party['hp']})はダンジョンに到着した')
     for monster in monster_list:
         kills += do_battle(party,monster)
-        hp = party['HP']
+        hp = party['hp']
         #hp=0
         if hp > 0:
-            print(f'{party['プレーヤー名']}はさらに奥に進んだ')
+            print(f'{party['name']}はさらに奥に進んだ')
             print('==================================')
         else:
-            print(f'{party['プレーヤー名']}はダンジョンから逃げ出した')
+            print(f'{party['name']}はダンジョンから逃げ出した')
             return kills
 
-    print(f'{party['プレーヤー名']}はダンジョンを制覇した')
+    print(f'{party['name']}はダンジョンを制覇した')
     return kills
 
 def do_battle(party,monster):
     print_monster_name(monster)
     print('が現れた!')
     while(True):
-        if party['HP'] > 0:
+        if party['hp'] > 0:
             on_player_turn(party,monster)
             if monster['hp'] <= 0:
                 break
         if monster['hp'] > 0:
             on_enemy_turn(party,monster)
-            if party['HP'] <= 0:
+            if party['hp'] <= 0:
                 print ('パーティのHPは0になった')
                 return 0
     print_monster_name(monster)
@@ -194,24 +194,26 @@ def print_monster_name(monster):
     print(f'\033[3{color}m{symbol}{monster_name}{symbol}\033[0m',end='')
 
 def on_player_turn(party,monster):
-    print(f'【{party['プレーヤー名']}のターン】(HP={party['HP']})')
+    print(f'\n【{party['name']}のターン】(HP={party['hp']})')
     com = input('コマンド?>')
     dmg = do_attack(party,monster,com)
     print(f'{dmg}のダメージを与えた')
     monster['hp'] -= dmg
 
 def on_enemy_turn(party,monster):
-    print(f'【{monster['name']}のターン】(HP={monster['hp']})')
+    print(f'\n【 ', end ='')
+    print_monster_name(monster)
+    print(f'のターン】(HP={monster['hp']})')
     dmg =do_enemy_attack(party,monster)
     print(f'{dmg}のダメージを受けた')
-    party['HP'] -= dmg
+    party['hp'] -= dmg
 
 def do_attack(party,monster,com):
-    dmg = abs((hash(com)) % 50 - monster['dp'])
+    dmg = math.floor(abs((hash(com) % 50)* random.uniform(0.9,1.1)))
     return dmg
 
 def do_enemy_attack(party,monster):
-    dmg = math.floor((monster['ap'] - party['防御力']) * random.uniform(0.9,1.1))
+    dmg = math.floor((monster['ap'] - party['dp']) * random.uniform(0.9,1.1))
     return dmg
     
 def show_battle_field(party,monster):
@@ -219,7 +221,7 @@ def show_battle_field(party,monster):
     print_monster_name(monster)
     print(f'HP = {monster['hp']} / {monster['max_hp']}' )
     print()
-    for friend in party['味方モンスター']:
+    for friend in party['friends']:
         print_monster_name(friend)
 
 def fill_gemes():
@@ -228,4 +230,5 @@ def fill_gemes():
 def print_gems():
     pass
 
+#main関数の呼び出し
 main()
