@@ -21,33 +21,33 @@ ELEMENT_COLORS ={
 #関数宣言
 def main():
     friends =[
-            {'名前':'青龍',
-             'HP':150,
-             '最大HP':150,
-             '属性':'風',
-             '攻撃力':15,
-             '防御力':10,
+            {'name':'青龍',
+             'hp':150,
+             'max_hp':150,
+             'element':'風',
+             'ap':15,
+             'dp':10,
              },
-            {'名前':'朱龍',
-             'HP':150,
-             '最大HP':150,
-             '属性':'火',
-             '攻撃力':25,
-             '防御力':10,
+            {'name':'朱龍',
+             'hp':150,
+             'max_hp':150,
+             'element':'火',
+             'ap':25,
+             'dp':10,
              },
-            {'名前':'白虎',
-             'HP':150,
-             '最大HP':150,
-             '属性':'土',
-             '攻撃力':20,
-             '防御力':5,
+            {'name':'白虎',
+             'hp':150,
+             'max_hp':150,
+             'element':'土',
+             'ap':20,
+             'dp':5,
              },
-            {'名前':'玄武',
-             'HP':150,
-             '最大HP':150,
-             '属性':'水',
-             '攻撃力':20,
-             '防御力':15,
+            {'name':'玄武',
+             'hp':150,
+             'max_hp':150,
+             'element':'水',
+             'ap':20,
+             'dp':15,
              },
             ]
     monster_list = [
@@ -214,5 +214,18 @@ def do_enemy_attack(party,monster):
     dmg = math.floor((monster['ap'] - party['防御力']) * random.uniform(0.9,1.1))
     return dmg
     
+def show_battle_field(party,monster):
+    print('バトルフィールド')
+    print_monster_name(monster)
+    print(f'HP = {monster['hp']} / {monster['max_hp']}' )
+    print()
+    for friend in party['味方モンスター']:
+        print_monster_name(friend)
+
+def fill_gemes():
+    pass
+
+def print_gems():
+    pass
 
 main()
